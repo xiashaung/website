@@ -13,8 +13,7 @@ class ErrorController extends Yaf_Controller_Abstract {
 //		$this->getView()->assign("exception", $exception);
 		//5. render by Yaf
         //
-        return $this->getView()->display('error.error',compact('exception'));
-
-//        return false;
+        Log::info($exception);
+        echo  $this->getView()->render('error.error',compact('exception'));
 	}
 }

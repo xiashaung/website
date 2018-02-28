@@ -2,14 +2,16 @@
     "require": {
         "illuminate/database": "^5.6",
         "doctrine/dbal": "^2.6",
-        "smarty/smarty": "^3.1",
-        "illuminate/view": "^5.6"
+        "illuminate/view": "^5.6",
+        "monolog/monolog": "^1.23"
     },
     "autoload": {
         "files": [
             "app/Helpers.php",
             "app/SmartyDisplay.php",
-            "app/Blade.php"
+            "app/Blade.php",
+            "app/App.php",
+            "library/Log.php"
         ],
         "psr-4":{
             "Library\\":"library/"

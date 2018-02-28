@@ -8,6 +8,11 @@
     <title>Document</title>
 </head>
 <body>
-<div>这是laravel blade 模板</div>
+<div>这是laravel blade 模板</div> <br>
+<div>{{$name}}</div> <br>
+
+@foreach($table as $k => $v)
+    <div>{{$k}}</div>
+@endforeach
 </body>
 </html>

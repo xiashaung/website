@@ -8,6 +8,11 @@
     <title>Document</title>
 </head>
 <body>
-<div>这是laravel blade 模板</div>
+<div>这是laravel blade 模板</div> <br>
+<div><?php echo e($name); ?></div> <br>
+
+<?php $__currentLoopData = $table; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+    <div><?php echo e($k); ?></div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 </body>
 </html>

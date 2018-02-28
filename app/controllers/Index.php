@@ -5,12 +5,18 @@
  * @desc 默认控制器
  * @see http://www.php.net/manual/en/class.yaf-controller-abstract.php
  */
-class IndexController extends Yaf_Controller_Abstract {
+class IndexController extends BaseController
+{
 
 	/** 
      * 默认动作
      * Yaf支持直接把Yaf_Request_Abstract::getParam()得到的同名参数作为Action的形参
      * 对于如下的例子, 当访问http://yourhost/yaf/index/index/index/name/xiashuang 的时候, 你就会发现不同
+     */
+
+    /**
+     * @param string $name
+     * @return
      */
 	public function indexAction($name = "Stranger")
     {
@@ -25,10 +31,10 @@ class IndexController extends Yaf_Controller_Abstract {
 //		$this->getView()->assign("name", $model->selectSample());
 //		$this->getView()->assign("list", LaravelModel::all());
 //		//4. render by Yaf, 如果这里返回FALSE, Yaf将不会调用自动视图引擎Render模板
-        echo "<pre>";
-        $this->getView()->display('index.index',['a'=>'test blade']);
 
-        echo 1111;
+        $table = \Illuminate\Support\Facades\DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='womaodev'");
+        view('index.index',compact('name','table'));
+
 	}
 
 	public function testAction($name)

@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: xiashuang
- * Date: 2018/2/28
- * Time: 09:51
+ * Class Blade
+ * yaf laravel blade 模板类
  */
 class Blade   implements Yaf_View_Interface
 {
@@ -22,42 +20,74 @@ class Blade   implements Yaf_View_Interface
         $this->setBladeCompiler();
     }
 
+    /**
+     * 设置视图文件路径
+     */
     public function setFileViewFinder()
     {
         $this->fileViewFinder = new \Illuminate\View\FileViewFinder($this->getFileSystem(), $this->getPath());
     }
 
+    /**
+     * 设置缓存文件路径
+     */
     public function setBladeCompiler()
     {
         $this->bladeCompiler = new \Illuminate\View\Compilers\BladeCompiler($this->getFileSystem(), $this->getCachePath());
     }
 
+    /**
+     * @return \Illuminate\Filesystem\Filesystem
+     * 获取文件系统
+     */
     protected function getFileSystem()
     {
         return new \Illuminate\Filesystem\Filesystem();
     }
 
+    /**
+     * @return array
+     * 获取视图文件路径
+     */
     protected function getPath()
     {
         return [APPLICATION_PATH . '/app/views'];
     }
 
+    /**
+     * @return string
+     * 缓存文件路径
+     */
     protected function getCachePath()
     {
         return APPLICATION_PATH . '/app/views/cache';
     }
 
-    public function display($view, $data = [], $mergeData = [])
+    /**
+     * @param string $view
+     * @param array $data
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function display($view, $data = [])
     {
-        $view = str_replace('.blade.php',' ',$view);
-        return $this->getFactory()->make($view,$data,$mergeData)->render();
-    }
-    public function render($view, $data = [],$mergeData = [])
-    {
-        $view = str_replace('.blade.php',' ',$view);
-        return $this->getFactory()->make($view,$data,$mergeData)->render();
+        return $this->getFactory()->make($this->replaceView($view),$data);
     }
 
+    /**
+     * @param string $view
+     * @param array $data
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function render($view, $data = [])
+    {
+        return $this->getFactory()->make($this->replaceView($view),$data);
+    }
+
+    /**
+     * @param string $name
+     * @param null $value
+     * 无需实现
+     */
     public function assign($name, $value = null){}
 
     public function setScriptPath($tpl_dir)
@@ -70,11 +100,19 @@ class Blade   implements Yaf_View_Interface
         return $this->scriptPath;
     }
 
+    /**
+     * @return \Illuminate\View\Factory
+     * 获取视图工厂类
+     */
     public function getFactory()
     {
         return new \Illuminate\View\Factory($this->getEngineResolver(),$this->fileViewFinder,$this->getDispatcher());
     }
 
+    /**
+     * @return \Illuminate\View\Engines\EngineResolver
+     * 获取视图引擎
+     */
     public function getEngineResolver()
     {
         $resolver =  new \Illuminate\View\Engines\EngineResolver();
@@ -130,5 +168,8 @@ class Blade   implements Yaf_View_Interface
         });
     }
 
-
+    public function replaceView($view = '')
+    {
+        return str_replace('.blade.php',' ',$view);
+    }
 }
