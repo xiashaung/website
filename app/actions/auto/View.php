@@ -152,6 +152,9 @@ class ViewAction extends Yaf_Action_Abstract
                 </div>
             </div>
         </div>
+        <div style=\"float: right\">
+                        {{\$list->links('index.page',['elements'=>\$list])}}
+                    </div>
         <!-- END CONTENT BODY -->
     </div>
 @endsection

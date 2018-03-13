@@ -22,11 +22,6 @@ class IndexController extends BaseController
      */
 	public function indexAction($name = "Stranger")
     {
-        $table = DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='yaf'");
-        foreach ($table as $v){
-            echo $v->COLUMN_COMMENT.PHP_EOL;
-        }
-        die;
         $this->setReturn(view('index/index'));
 	}
 

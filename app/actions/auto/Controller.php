@@ -45,6 +45,16 @@ class ControllerAction extends Yaf_Action_Abstract
         return $str;
     }
 
+    public function viewName()
+    {
+        $name = explode('_',$this->name);
+        $str = '';
+        foreach ($name as $v){
+            $str .= ucfirst($v);
+        }
+        return lcfirst($str);
+    }
+
     public function Controller()
     {
         $str = "<?php
@@ -58,7 +68,7 @@ class ".$this->controllerName()." extends BaseController
     public function indexAction()
     {
         \$list = ".$this->formatName."::paginate(10);
-        \$this->setReturn(view('role.index',compact('list')));
+        \$this->setReturn(view('".$this->viewName().".index',compact('list')));
     }
 
 
@@ -68,7 +78,7 @@ class ".$this->controllerName()." extends BaseController
      */
     public function createAction()
     {
-        \$this->setReturn(view('role.create'));
+        \$this->setReturn(view('".$this->viewName().".create'));
     }
 
     /**
@@ -78,7 +88,7 @@ class ".$this->controllerName()." extends BaseController
     public function storeAction()
     {
         ".$this->formatName."::create(Request::all());
-        \$this->redirect('/role/index');
+        \$this->redirect('/".$this->viewName()."/index');
     }
 
     /**
@@ -90,7 +100,7 @@ class ".$this->controllerName()." extends BaseController
     public function editAction(\$id)
     {
         \$info = ".$this->formatName."::find(\$id);
-        \$this->setReturn(view('role.edit',compact('info')));
+        \$this->setReturn(view('".$this->viewName().".edit',compact('info')));
     }
 
     /**
@@ -104,7 +114,7 @@ class ".$this->controllerName()." extends BaseController
         \$all =  Request::all();
         \$info = ".$this->formatName."::find(\$id);
         \$info->fill(\$all)->save();
-        \$this->redirect('/role/index');
+        \$this->redirect('/".$this->viewName()."/index');
     }
 
     /**
@@ -115,7 +125,7 @@ class ".$this->controllerName()." extends BaseController
     public function deleteAction(\$id)
     {
         ".$this->formatName."::destroy(\$id);
-        \$this->redirect('/role/index');
+        \$this->redirect('/".$this->viewName()."/index');
     }
 }";
         FileManager::write(APPLICATION_PATH.'/app/controllers/'.rtrim($this->controllerName(),'Controller').'.php',$str);
