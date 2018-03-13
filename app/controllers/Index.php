@@ -7,7 +7,7 @@
  */
 class IndexController extends BaseController
 {
-
+    use \Permission\Traits\Permission;
 	/** 
      * 默认动作
      * Yaf支持直接把Yaf_Request_Abstract::getParam()得到的同名参数作为Action的形参
@@ -15,39 +15,29 @@ class IndexController extends BaseController
      */
 
     /**
+     * @method get
+     * @desc 首页_测试测试
      * @param string $name
      * @return
      */
 	public function indexAction($name = "Stranger")
     {
-//		//1. fetch query
-//		$get = $this->getRequest()->getQuery("get", "default value");
-//
-//		//2. fetch model
-//		$model = new SampleModel();
-////        $models = $model->selectSample();
-//
-//		//3. assign
-//		$this->getView()->assign("name", $model->selectSample());
-//		$this->getView()->assign("list", LaravelModel::all());
-//		//4. render by Yaf, 如果这里返回FALSE, Yaf将不会调用自动视图引擎Render模板
-
-        $table = \Illuminate\Support\Facades\DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='womaodev'");
-        view('index.index',compact('name','table'));
-
+        $table = DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='yaf'");
+        foreach ($table as $v){
+            echo $v->COLUMN_COMMENT.PHP_EOL;
+        }
+        die;
+        $this->setReturn(view('index/index'));
 	}
 
+    /**
+     * @desc 测试方法
+     * @param $name
+     * @return bool
+     */
 	public function testAction($name)
     {
-        $table = \Library\Db\DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='womaodev'");
-        echo '<pre>';
-        print_r($table);
-        return false;
-    }
-
-    public function test($name)
-    {
-        echo $name;
+        $table = DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='womaodev'");
         return false;
     }
 }

@@ -2,10 +2,10 @@
 
 return  [
         'driver' => 'mysql',
-        'host' => '101.37.141.70',
-        'database' => 'womaodev',
-        'username' => 'womaomain',
-        'password' => '@Womaojr',
+        'host' => '127.0.0.1',
+        'database' => 'yaf',
+        'username' => 'root',
+        'password' => 'root',
         'charset' => 'utf8',
         'collation' => 'utf8_unicode_ci',
         'prefix' => '',

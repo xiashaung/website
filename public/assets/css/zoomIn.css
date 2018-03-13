@@ -1,0 +1,15 @@
+input[type=file]{
+    display: inline-block;
+}
+.zoomIn{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 3;
+    text-align: center;
+    display: none;
+}
+.zoomIn img{
+    display: inline;
+}

@@ -1,0 +1,6 @@
+/vendor
+/app/view/cache
+/app/view/compile
+/conf/application.ini
+.gitignore
+/storage
