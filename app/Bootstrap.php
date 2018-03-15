@@ -12,7 +12,6 @@ use Illuminate\Container\Container;
  */
 class Bootstrap extends Yaf_Bootstrap_Abstract
 {
-    use Validate;
     public function _initConfig()
     {
         //把配置保存起来
@@ -20,31 +19,32 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
         Yaf_Registry::set('config', $arrConfig);
     }
 
-    public function __initSession()
-    {
-        session()->start();
-    }
-
     public function _initPlugin(Yaf_Dispatcher $dispatcher)
     {
         //注册一个插件
-        $objSamplePlugin = new SamplePlugin();
-        $dispatcher->registerPlugin($objSamplePlugin);
+        $objSetReturnPlugin = new SetReturnPlugin();
+        $objAuthPlugin = new AuthPlugin();
+        $objRegisterPlugin = new RegisterPlugin();
+        $dispatcher->registerPlugin($objSetReturnPlugin);
+        $dispatcher->registerPlugin($objAuthPlugin);
+        $dispatcher->registerPlugin($objRegisterPlugin);
     }
 
     public function _initRoute(Yaf_Dispatcher $dispatcher)
     {
         //在这里注册自己的路由协议,默认使用简单路由
-        $router = Yaf_Dispatcher::getInstance()->getRouter();
-        $route = require_once(APPLICATION_PATH . '/conf/route.php');
-        foreach ($route as $k => $v) {
-            $router->addRoute($k, $v);
-        }
+//        $router = Yaf_Dispatcher::getInstance()->getRouter();
+//        $route = require_once(APPLICATION_PATH . '/conf/route.php');
+//        foreach ($route as $k => $v) {
+//            $router->addRoute($k, $v);
+//        }
     }
 
     public function _initView(Yaf_Dispatcher $dispatcher)
     {
+        //关闭视图自动显示
         $dispatcher->disableView();
+        //
         $dispatcher->flushInstantly(false);
         //注册分页视图
         \Illuminate\Pagination\Paginator::viewFactoryResolver(function(){
@@ -74,10 +74,15 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
      */
     public function _initDatabase(Yaf_Dispatcher $dispatcher)
     {
-        define('MYSQL_CONFIG',require (APPLICATION_PATH.'/conf/database.php'));
+        define('MYSQL_CONFIG',Yaf_Registry::get('config')->get('mysql')->toArray());
         $capsule = new Capsule;
         $capsule->addConnection(MYSQL_CONFIG);
-        $capsule->setEventDispatcher(new Dispatcher(new Container));
+        $capsule->setEventDispatcher($event = new Dispatcher(new Container));
+
+        //注册事件系统
+        Yaf_Registry::set('event',$event);
+
+        $this->enableSqlLog($event);
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
     }
@@ -88,7 +93,15 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
     public function _initWhoops()
     {
         $whoops = new \Whoops\Run;
-        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
         $whoops->register();
+    }
+    //注册监听sql事件
+    protected function enableSqlLog(Dispatcher $event)
+    {
+         if (Yaf_Registry::get('config')->get('mysql.log')==1){
+             $event->listen('Illuminate\Database\Events\QueryExecuted','Listeners\QueryListener');
+             $event->listen('Events\Query','Listeners\QueryListener');
+         }
     }
 }

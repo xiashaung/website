@@ -59,4 +59,13 @@ class Auth
              return false;
          }
      }
+
+    /**
+     * @param $method
+     * 验证当前方法是否允许get或post请求
+     */
+     public static function checkRequestMethod($class,$method)
+     {
+
+     }
 }

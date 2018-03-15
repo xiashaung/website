@@ -4,3 +4,4 @@
 /conf/application.ini
 .gitignore
 /storage
+.env

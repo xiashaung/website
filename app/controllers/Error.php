@@ -12,13 +12,10 @@ class ErrorController extends Yaf_Controller_Abstract {
      * @desc 显示异常
      * @param $exception
      */
-	public function errorAction($exception) {
-
+	public function errorAction($exception)
+    {
         Log::info($exception);
 
-        if ($exception instanceof Yaf_Exception_LoadFailed_Action){
-
-        }
         throw $exception;
 	}
 }

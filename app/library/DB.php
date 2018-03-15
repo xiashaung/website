@@ -1,6 +1,7 @@
 <?php
 class DB
 {
+
     /**
      * @var \PDO
      */
@@ -10,7 +11,7 @@ class DB
     {
        if (!self::$connection){
            $config = self::getMysqlConfig();
-           self::$connection = new \PDO("mysql:host=$config[host];dbname=$config[database]",$config['username'],$config['password'],[PDO::MYSQL_ATTR_INIT_COMMAND=>'SET NAMES utf8']);
+           self::$connection = new \PDO("mysql:host=$config[host];dbname=$config[database]",$config['username'],$config['password'],[PDO::MYSQL_ATTR_INIT_COMMAND=>'SET NAMES utf8',PDO::ATTR_PERSISTENT => true]);
        }
 
        return self::$connection;
@@ -31,10 +32,16 @@ class DB
 
     public static function select($sql,array $binding = [])
     {
-        $instance = static::instance();
-        $statement = $instance->prepare($sql);
+        $start = microtime(true);
+
+        $statement = static::instance()->prepare($sql);
+
         self::bindValues($statement,self::prepareBindings($binding));
+
         $statement->execute();
+
+        Yaf_Registry::get('event')->dispatch(new \Events\Query($sql,$binding,self::getTime($start)));
+
         return $statement->fetchAll(PDO::FETCH_OBJ);
     }
 
@@ -88,4 +95,9 @@ class DB
             );
         }
     }
+
+   protected static function getTime($start)
+   {
+       return round((microtime(true) - $start) * 1000, 2);
+   }
 }

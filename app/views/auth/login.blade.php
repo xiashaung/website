@@ -116,7 +116,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         vm[x] = false;
                     }
 
-                    window.location.href = '/admin/index';
+                    window.location.href = '/index/index';
                 }
 
 

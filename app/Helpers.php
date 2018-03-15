@@ -105,3 +105,4 @@ function checkAuth($uri)
    return Auth::can($uri);
 
 }
+

@@ -16,6 +16,9 @@ class AuthController extends BaseController
      */
     public function loginAction()
     {
+        if (Auth::check()){
+            $this->redirect('/index/index');
+        }
         $this->setReturn(view('auth.login'));
     }
 

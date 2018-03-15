@@ -17,11 +17,11 @@ class IndexController extends BaseController
     /**
      * @method get
      * @desc 首页_测试测试
-     * @param string $name
      * @return
      */
-	public function indexAction($name = "Stranger")
+	public function indexAction()
     {
+        DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name='manager_users' and table_schema='womaodev'");
         $this->setReturn(view('index/index'));
 	}
 

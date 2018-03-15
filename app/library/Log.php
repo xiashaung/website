@@ -20,35 +20,44 @@
  */
 class Log
 {
-    private function getLogger()
+    protected static $profer;
+
+    protected static $name;
+    /**
+     * @param string $name
+     * @return \Monolog\Logger
+     */
+    private static function getLogger($name)
     {
-       return new \Monolog\Logger('yaf');
+       return new \Monolog\Logger($name);
     }
 
     /**
      * @return \Monolog\Logger
      */
-    private function handler()
+    public static function handler($name = 'yaf')
     {
-        FileManager::make($this->logPath(),true);
+        self::$name = $name;
 
-        $handler = $this->getLogger()->pushHandler(((new \Monolog\Handler\StreamHandler($this->logPath().date('Y-m-d').'.log'))->setFormatter(new \Monolog\Formatter\LineFormatter(null, null, true, true))));
+        FileManager::make(self::logPath(),true);
+
+        $handler = self::getLogger($name)->pushHandler(((new \Monolog\Handler\StreamHandler(self::logPath().date('Y-m-d').'.log'))->setFormatter(new \Monolog\Formatter\LineFormatter(null, null, true, true))));
 
         return $handler;
     }
 
-    public function logPath()
+    public static function logPath()
     {
-        return APPLICATION_PATH.'/storage/logs/yaf/';
+        return APPLICATION_PATH.'/storage/logs/'.self::$name.'/';
     }
 
     public static function __callStatic($name, $arguments)
     {
-        return (new static())->handler()->$name(...$arguments);
+        return self::handler('yaf')->$name(...$arguments);
     }
 
     public function __call($name, $arguments)
     {
-        $this->handler()->$name(...$arguments);
+        return self::$name(...$arguments);
     }
 }
