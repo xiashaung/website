@@ -11,6 +11,10 @@ class RegisterPlugin extends Yaf_Plugin_Abstract
     {
         //注册request对象
         Yaf_Registry::set('request',$request);
+        //注册laravel request对象
+        app()->singleton('request',function(){
+            return \Illuminate\Http\Request::createFromGlobals();
+        });
 
     }
 }

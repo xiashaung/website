@@ -1,13 +1,18 @@
 <?php
+use Illuminate\Container\Container;
+
 
 /**
- * @param $class
- * @return mixed
- * 工厂类
+ * @param null $make
+ * @param array $parameters
+ * @return mixed|Illuminate\Container\Container
  */
-function app($class)
+function app($make = null, $parameters = [])
 {
-    return (new App)->make($class);
+    if (!$make){
+        return Container::getInstance();
+    }
+    return Container::getInstance()->make($make,$parameters);
 }
 
 /**
@@ -24,29 +29,35 @@ function view($view,$data = [])
 
 /**
  * @param string $var
- * @return mixed|\Tools\tools\Request
+ * @return mixed|\Illuminate\Http\Request
  */
 function request($var = '',$default = null)
 {
-   if (!$var){
-       return \Tools\tools\Request::createFromGlobals();
-   }
-   //从yaf request类中检索数据
-   if ($value = Yaf_Registry::get('request')->getParam($var)){
-       return $value;
-   }
+    if (is_null($var)) {
+        return app('request');
+    }
 
-   return \Tools\tools\Request::input($var,$default);
+    if (is_array($var)) {
+        return app('request')->only($var);
+    }
+
+    $value = app('request')->__get($var);
+
+    return is_null($value) ? value($default) : $value;
 }
 
-
+/**
+ * @param string $var
+ * @param string $default
+ * @return mixed | Session
+ */
 function session($var = '',$default = '')
 {
     if (!$var){
-        return new \Tools\tools\Session();
+        app(Session::class);
     }
 
-    return app(\Tools\tools\Session::class)->get($var,$default);
+    return app(Session::class)->get($var,$default);
 }
 
 function ajaxReturn($status,$message = '',$data = [],$json_option = JSON_UNESCAPED_UNICODE)

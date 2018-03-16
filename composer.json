@@ -4,11 +4,11 @@
         "monolog/monolog": "^1.23",
         "filp/whoops": "^2.1",
         "symfony/var-dumper": "^4.0",
-        "xiashuang/tools": "dev-master",
         "respect/validation": "^1.1",
         "illuminate/database": "5.5.*",
         "illuminate/view": "5.5.*",
         "illuminate/console": "5.5.*",
+        "illuminate/http": "5.5.*",
         "Illuminate/Pagination": "5.5.*",
         "fzaninotto/faker": "^1.7"
     },

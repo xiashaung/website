@@ -18,8 +18,7 @@ class QueryListener
      */
     public function handle($event)
     {
-        $sql = str_replace("?", "'%s'", $event->sql);
-        $log = vsprintf($sql, $event->bindings);
-        \Log::handler('sql_log')->info($log);
+        $event->sql  = vsprintf(str_replace("?", "'%s'", $event->sql), $event->bindings);
+        \Log::handler('sql_log')->info(json_encode($event));
     }
 }
