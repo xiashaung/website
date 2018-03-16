@@ -1,103 +1,47 @@
 <?php
+
+/**
+ * Class DB
+ * @method static  selectOne($query, $bindings = [], $useReadPdo = true)
+ * @method static  select($query, $bindings = [], $useReadPdo = true)
+ * @method static  cursor($query, $bindings = [], $useReadPdo = true)
+ * @method static  insert($query, $bindings = [])
+ * @method static  update($query, $bindings = [])
+ * @method static  delete($query, $bindings = [])
+ * @method static  statement($query, $bindings = [])
+ * @method static  transaction(Closure $callback, $attempts = 1)
+ * @method static  beginTransaction()
+ * @method static  commit()
+ * @method static  rollBack($toLevel = null)
+ */
 class DB
 {
-
     /**
-     * @var \PDO
+     * @return \Illuminate\Database\Connection
      */
-     private static  $connection;
-
-    protected static function connection()
+    protected static function getConnection()
     {
-       if (!self::$connection){
-           $config = self::getMysqlConfig();
-           self::$connection = new \PDO("mysql:host=$config[host];dbname=$config[database]",$config['username'],$config['password'],[PDO::MYSQL_ATTR_INIT_COMMAND=>'SET NAMES utf8',PDO::ATTR_PERSISTENT => true]);
-       }
-
-       return self::$connection;
+        return  Yaf_Registry::get('capsule')->getConnection();
     }
 
     /**
-     * @return \PDO
+     * @param $table
+     * @return \Illuminate\Database\Query\Builder
      */
-    public static function instance()
+    public static function table($table)
     {
-        return self::connection();
+        return self::getConnection()->table($table);
     }
-
-    public static function getMysqlConfig()
-    {
-        return MYSQL_CONFIG;
-    }
-
-    public static function select($sql,array $binding = [])
-    {
-        $start = microtime(true);
-
-        $statement = static::instance()->prepare($sql);
-
-        self::bindValues($statement,self::prepareBindings($binding));
-
-        $statement->execute();
-
-        Yaf_Registry::get('event')->dispatch(new \Events\Query($sql,$binding,self::getTime($start)));
-
-        return $statement->fetchAll(PDO::FETCH_OBJ);
-    }
-
-
-    public static function beginTransaction()
-    {
-        static::instance()->beginTransaction();
-    }
-
-
-    public static function rollBack()
-    {
-        static::instance()->rollBack();
-    }
-
-
-    public static function commit()
-    {
-        static::instance()->commit();
-    }
-
-    public static function prepareBindings(array $bindings)
-    {
-
-        foreach ($bindings as $key => $value) {
-            if ($value instanceof DateTimeInterface) {
-                $bindings[$key] = $value->format('Y-m-d H:i:s');
-            } elseif (is_bool($value)) {
-                $bindings[$key] = (int) $value;
-            }
-        }
-
-        return $bindings;
-    }
-
-
 
     /**
-     * Bind values to their parameters in the given statement.
-     *
-     * @param  \PDOStatement $statement
-     * @param  array  $bindings
-     * @return   void
+     * @param $name
+     * @param $arguments
+     * @return mixed
      */
-    protected static function bindValues($statement, $bindings)
+    public static function __callStatic($name, $arguments)
     {
-        foreach ($bindings as $key => $value) {
-            $statement->bindValue(
-                is_string($key) ? $key : $key + 1, $value,
-                is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR
-            );
-        }
+        return self::getConnection()->$name(...$arguments);
     }
 
-   protected static function getTime($start)
-   {
-       return round((microtime(true) - $start) * 1000, 2);
-   }
+
 }

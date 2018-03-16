@@ -85,6 +85,11 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
         $this->enableSqlLog($event);
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
+
+        //注册DB查询系统
+        Yaf_Registry::set('capsule',$capsule);
+
+
     }
 
     /**

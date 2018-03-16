@@ -5,7 +5,7 @@ use Illuminate\Container\Container;
 /**
  * @param null $make
  * @param array $parameters
- * @return mixed|Illuminate\Container\Container
+ * @return mixed
  */
 function app($make = null, $parameters = [])
 {
@@ -54,7 +54,7 @@ function request($var = '',$default = null)
 function session($var = '',$default = '')
 {
     if (!$var){
-        app(Session::class);
+        return app(Session::class);
     }
 
     return app(Session::class)->get($var,$default);

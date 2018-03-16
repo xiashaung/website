@@ -8,9 +8,9 @@
  */
 class App
 {
-    protected static $app = [];
+    protected static $app;
 
-    public function make($class)
+    public static function make($class)
     {
         if (!isset(self::$app[$class])){
             self::$app[$class] = new $class;
