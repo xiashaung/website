@@ -31,7 +31,7 @@ function view($view,$data = [])
  * @param string $var
  * @return mixed|\Illuminate\Http\Request
  */
-function request($var = '',$default = null)
+function request($var = null,$default = null)
 {
     if (is_null($var)) {
         return app('request');

@@ -22,7 +22,7 @@ class FileManager
      * @return bool
      * 检查文件(夹)是否存在 不存在就创建文件(夹)
      */
-     public static function make($filepath,$dir = false,$mode = 0755)
+     public static function make($filepath,$dir = false,$mode = 0777)
      {
          if (!static::exists($filepath)){
              if ($dir){
