@@ -21,7 +21,6 @@ class IndexController extends BaseController
      */
 	public function indexAction()
     {
-        dd(Yaf_Registry::get('capsule')->getConnection()->select("select * from manager_users"));
         $this->setReturn(view('index/index'));
 	}
 

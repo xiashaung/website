@@ -19,20 +19,10 @@ class AuthPlugin     extends  Yaf_Plugin_Abstract
         //获取uri
         $uri = lcfirst($request->getControllerName()).'/'.$request->getActionName();
 
-        $permission = \Permission\Model\Eloquent\Permission::where('url',$uri)->first();
-
-        if ($permission){
-            if (!in_array($request->getMethod(),explode(',',$permission->method))){
-                if ($request->isXmlHttpRequest()){
-                    ajaxReturn(0,"method not allowed",[]);
-                }else{
-                    throw new \Exception("method not allowed");
-                }
-            }
-        }
+        //检查相应的请求方法
+        Auth::checkRequestMethod($request);
 
         if (!in_array($uri,['auth/login','auth/postlogin'])){
-
             if (!Auth::check()) {
                 redirect('auth/login');
             }else{

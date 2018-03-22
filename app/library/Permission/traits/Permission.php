@@ -43,7 +43,7 @@ trait Permission
                         //通过反射获得注释
                         $doc = $refl->getMethod($val)->getDocComment();
                         $arr[$i]['method'] = strtoupper($this->getMethod($doc));//获取访问方法
-                        $arr[$i]['desc'] = $this->getDesc($doc);//获取权限描述
+                        $arr[$i]['desc'] = self::getDesc($doc);//获取权限描述
                         $i++;
                     }
                 }
@@ -57,7 +57,7 @@ trait Permission
      * @param $doc
      * @return mixed|string
      */
-    private function getMethod($doc)
+    private static function getMethod($doc)
     {
         foreach (self::$methods as $v){
             if (preg_match('/\* @method .*/',$doc,$match)){
@@ -66,7 +66,7 @@ trait Permission
                 }
             }
         }
-        return 'get';
+        return '';
     }
 
     /**

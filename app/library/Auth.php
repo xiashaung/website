@@ -8,6 +8,9 @@
  */
 class Auth
 {
+    use \Permission\Traits\Permission;
+
+
      public static function id()
      {
          if (!isset(session()->get('auth')->id)){
@@ -61,11 +64,26 @@ class Auth
      }
 
     /**
-     * @param $method
-     * 验证当前方法是否允许get或post请求
+     * @param Yaf_Request_Abstract $request
+     * @return bool
      */
-     public static function checkRequestMethod($class,$method)
+     public static function checkRequestMethod(Yaf_Request_Abstract $request)
      {
+         $controller = ucfirst($request->getControllerName()).'Controller';
 
+         $reflection = new ReflectionClass($controller);
+
+         $doc = $reflection->getMethod($request->getActionName().'Action')->getDocComment();
+
+         $method = self::getMethod($doc);
+
+         if (!$method || in_array(strtolower($request->getMethod()),explode(',',$method))){
+             return true;
+         }
+         if ($request->isXmlHttpRequest()){
+             ajaxReturn(0,"request method not allowed",[]);
+         }else{
+             throw new \Exception("request method not allowed");
+         }
      }
 }
