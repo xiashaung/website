@@ -67,7 +67,7 @@ class Request extends fromRequest
      */
     public static function __callStatic($method,$args)
     {
-        return static::instance()->$method(...$args);
+        return static::method()->$method(...$args);
     }
 
 }
