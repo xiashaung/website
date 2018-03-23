@@ -73,17 +73,20 @@ class Auth
 
          $reflection = new ReflectionClass($controller);
 
-         $doc = $reflection->getMethod($request->getActionName().'Action')->getDocComment();
+         if ($reflection->hasMethod($request->getActionName().'Action')){
+             $doc = $reflection->getMethod($request->getActionName().'Action')->getDocComment();
 
-         $method = self::getMethod($doc);
+             $method = self::getMethod($doc);
 
-         if (!$method || in_array(strtolower($request->getMethod()),explode(',',$method))){
-             return true;
+             if (!$method || in_array(strtolower($request->getMethod()),explode(',',$method))){
+                 return true;
+             }
+             if ($request->isXmlHttpRequest()){
+                 ajaxReturn(0,"request method not allowed",[]);
+             }else{
+                 throw new \Exception("request method not allowed");
+             }
          }
-         if ($request->isXmlHttpRequest()){
-             ajaxReturn(0,"request method not allowed",[]);
-         }else{
-             throw new \Exception("request method not allowed");
-         }
+
      }
 }

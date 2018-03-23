@@ -6,7 +6,7 @@ require 'Select.php';
  * Date: 2018/3/13
  * Time: 09:56
  */
-class ViewAction extends Yaf_Action_Abstract
+class ViewAction extends BaseAction
 {
     protected $name;
 
@@ -19,9 +19,18 @@ class ViewAction extends Yaf_Action_Abstract
 
     public function execute()
     {
-       $this->name = request('name');
-       $this->desc = request('desc');
-       $except = explode(',',request('except')) ?? [];
+        if (request('op')){
+            $this->handle();
+        }else{
+            $this->setReturn(view('auto.view'));
+        }
+    }
+
+    public function handle()
+    {
+        $this->name = request('name');
+        $this->desc = request('desc');
+        $except = explode(',',request('except')) ?? [];
 
         if (!$this->name){
             throw new Exception('请输入表名');
@@ -33,11 +42,7 @@ class ViewAction extends Yaf_Action_Abstract
 
         $this->select = new Select($this->name,$except);
 
-        $this->index();
-
-        $this->create();
-
-        $this->edit();
+        $this->index()->create()->edit();
     }
 
     public function  getApplicationName()
@@ -160,6 +165,7 @@ class ViewAction extends Yaf_Action_Abstract
 @endsection
 ";
         $this->write($str,'index');
+        return $this;
     }
 
     public function getCreateInput()
@@ -248,6 +254,7 @@ class ViewAction extends Yaf_Action_Abstract
 @endsection
 ";
         $this->write($str,'create');
+        return $this;
     }
 
     /**
@@ -300,6 +307,7 @@ class ViewAction extends Yaf_Action_Abstract
 @endsection
 ";
         $this->write($str,'edit');
+        return $this;
     }
 
     protected function write($str,$name)

@@ -6,7 +6,7 @@
  * Date: 2018/3/12
  * Time: 15:34
  */
-class ControllerAction extends Yaf_Action_Abstract
+class ControllerAction extends BaseAction
 {
     protected $desc;
 
@@ -17,10 +17,18 @@ class ControllerAction extends Yaf_Action_Abstract
     public function execute()
     {
 
+        if (request('op')){
+            $this->handle();
+        }else{
+            $this->setReturn(view('auto.controller'));
+        }
+    }
+
+    public function handle()
+    {
         $this->name = request('name');
         $this->desc = request('desc');
-        $this->formatName();
-        $this->Controller();
+        $this->formatName()->Controller();
     }
 
     public function formatName()
@@ -32,6 +40,8 @@ class ControllerAction extends Yaf_Action_Abstract
         }
         $str .= 'Model';
         $this->formatName = $str;
+
+        return $this;
     }
 
     public function controllerName()
@@ -129,5 +139,14 @@ class ".$this->controllerName()." extends BaseController
     }
 }";
         FileManager::write(APPLICATION_PATH.'/app/controllers/'.rtrim($this->controllerName(),'Controller').'.php',$str);
+        echo '生成成功';die;
+    }
+
+    public function check()
+    {
+        if (file_exists(APPLICATION_PATH.'/app/controllers/'.rtrim($this->controllerName(),'Controller').'.php')){
+            echo '文件已存在';die;
+        }
+        return $this;
     }
 }

@@ -1,34 +1,44 @@
 <?php
-
+require  "Select.php";
 /**
  * Class ModelAction
  * 自动生成模型
  */
-class ModelAction    extends Yaf_Action_Abstract
+class ModelAction    extends BaseAction
 {
     protected $name;
 
     protected $desc;
 
     protected $table;
+
     public function execute()
-     {
-         $this->name = request('name');
-         $this->desc = request('desc');
-         $this->setTable();
-         $this->fillable();
-         $this->model();
-     }
+    {
+        if (request('op')){
+            $this->handle();
+        }else{
+            $this->setReturn(view('auto.model'));
+        }
+
+    }
+
+    public function handle()
+    {
+
+        $this->name = request('name');
+        $this->desc = request('desc');
+        $this->checkFile()->setTable()->model();
+    }
 
      protected function setTable()
      {
          $databaseName = Yaf_Registry::get('config')->get('mysql.database');
          $this->table = DB::select("SELECT * FROM  INFORMATION_SCHEMA.COLUMNS WHERE table_name=? and table_schema=? ",[$this->name,$databaseName]);
+         return $this;
      }
 
     public function fillable()
     {
-        $arr = [];
         $str = '';
         foreach ($this->table as $v){
             if (!in_array($v->COLUMN_NAME,['id'])){
@@ -116,9 +126,15 @@ class ".$this->formatName()." extends Model
     
 } ";
     FileManager::write(APPLICATION_PATH.'/app/models/'.rtrim($this->formatName(),'Model').'.php',$str);
-        die;
+        exit('生成成功');
 
     }
 
-
+   public function checkFile()
+   {
+     if (file_exists(APPLICATION_PATH.'/app/models/'.rtrim($this->formatName(),'Model').'.php')){
+         echo '文件已存在'; die;
+     }
+     return $this;
+   }
 }

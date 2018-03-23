@@ -53,6 +53,28 @@ class Menu
                     ],
                 ],
             ],
+            [
+                'title' => '自动生成工具',
+                'url' => 'javascript:;',
+                'icon'=> 'icon-home',
+                'menu' => [
+                    [
+                        'title'=>'模型',
+                        'url'=>'auto/model',
+                        'icon'=> 'icon-user',
+                    ],
+                    [
+                        'title'=>'CURD',
+                        'url'=>'auto/view',
+                        'icon'=> 'icon-user-unfollow',
+                    ],
+                    [
+                        'title'=>'控制器',
+                        'url'=>'auto/controller',
+                        'icon'=> 'icon-user-follow',
+                    ],
+                ],
+            ],
         ];
     }
 
